@@ -1,49 +1,66 @@
 #pragma once
 
-#include <vector>
 #include <QAbstractListModel>
+#include <vector>
 
-class GameBoard : public QAbstractListModel
-{
-    Q_OBJECT
-    Q_PROPERTY(int hiddenElementValue READ hiddenElementValue CONSTANT)
+#include <QTimer>
+
+class GameBoard : public QAbstractListModel {
+  Q_OBJECT
+  Q_PROPERTY(int hiddenElementValue READ hiddenElementValue CONSTANT)
+  Q_PROPERTY(int stepsCount READ stepsCount NOTIFY stepsCountChanged)
 public:
-    static constexpr size_t DEFAULT_DIMENSION  {4};
+  static constexpr size_t DEFAULT_DIMENSION{4};
 
-    GameBoard(QObject *parent = nullptr, size_t board_dimension = DEFAULT_DIMENSION);
+  GameBoard(QObject *parent = nullptr,
+            size_t board_dimension = DEFAULT_DIMENSION);
 
-    struct Tile {
-        size_t value {};
-        Tile& operator= (const size_t new_value){
-            value = new_value;
-            return *this;
-        }
-        bool operator==(const size_t other) {
-            return other == value;
-        }
-    };
+  struct Tile {
+    size_t value{};
+    Tile &operator=(const size_t new_value) {
+      value = new_value;
+      return *this;
+    }
+    bool operator==(const size_t other) { return other == value; }
+  };
 
-    void shuffle();
+  Q_INVOKABLE void shuffle();
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    size_t hiddenElementValue() const;
+  QVariant data(const QModelIndex &index,
+                int role = Qt::DisplayRole) const override;
 
-    Q_INVOKABLE bool move (int index);
+  size_t hiddenElementValue() const;
 
-    using Position = std::pair<size_t, size_t>;
+  Q_INVOKABLE bool move(int index);
+
+  using Position = std::pair<size_t, size_t>;
+  using iterator = std::vector<Tile>::iterator;
+
+  int stepsCount();
+  void setStepsCounter(int stepsCounter);
+
+signals:
+  void stepsCountChanged(int steps);
+  // void stepsCountChanged();
 
 private:
-    std::vector<Tile> m_raw_board;
-    const size_t m_dimension;
-    const size_t m_boardsize;
+  std::vector<Tile> m_raw_board;
 
-    const size_t m_hiddenElementValue;
+  const size_t m_dimension;
+  const size_t m_boardsize;
 
-    bool isBoardValid() const;
-    bool isPositionValid(const size_t position) const;
+  const size_t m_hiddenElementValue;
 
-    Position getRowCol(size_t index) const;
+  int m_stepsCounter{0};
 
+  QTimer gameTimer;
+  size_t m_gameTime;
+
+  bool isBoardValid() const;
+  bool isBoardFinished() const;
+  bool isPositionValid(const size_t position) const;
+
+  Position getRowCol(size_t index) const;
 };
