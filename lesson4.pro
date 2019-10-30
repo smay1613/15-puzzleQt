@@ -1,4 +1,4 @@
-QT += quick
+QT += quick sql
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -15,7 +15,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         gameboard.cpp \
         gamecontroller.cpp \
-        main.cpp
+        main.cpp \
+        sqlitemanager.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,4 +33,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     gameboard.h \
-    gamecontroller.h
+    gamecontroller.h \
+    sqlitemanager.h

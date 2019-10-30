@@ -60,6 +60,17 @@ void GameBoard::shuffle() {
   } while (!isBoardValid());
   emit dataChanged(createIndex(0, 0),
                    createIndex(static_cast<int>(m_boardsize), 0));
+  setStepsCounter(0);
+  gameTimer.invalidate();
+  qDebug() << __PRETTY_FUNCTION__;
+}
+
+void GameBoard::finishBoard() {
+  std::sort(m_raw_board.begin(), m_raw_board.end());
+  emit dataChanged(createIndex(0, 0),
+                   createIndex(static_cast<int>(m_boardsize), 0));
+  setStepsCounter(INT_MAX);
+  qDebug() << __PRETTY_FUNCTION__;
 }
 
 bool GameBoard::isBoardValid() const {
@@ -80,7 +91,19 @@ bool GameBoard::isBoardValid() const {
     }
   }
 
+  //  int inv = 0;
+  //  for (size_t i = 0; i < m_boardsize; ++i)
+  //    // if (a[i])
+  //    for (size_t j = 0; j < i; ++j)
+  //      if (m_raw_board[j].value > m_raw_board[i].value)
+  //        ++inv;
+  //  for (size_t i = 0; i < m_boardsize; ++i)
+  //    if (m_raw_board[i].value == 0)
+  //      inv += 1 + i / m_dimension;
+  //  qDebug() << __PRETTY_FUNCTION__
+  //           << ((inv & 1) ? "No Solution" : "Solution Exists");
   return (inv % 2) == 0;
+  // return (inv & 1);
 }
 
 bool GameBoard::isBoardFinished() const {
@@ -127,14 +150,9 @@ GameBoard::Position GameBoard::getRowCol(size_t index) const {
 
 bool GameBoard::move(int index) {
   if (isBoardFinished()) {
-    auto t = gameTimer.remainingTimeAsDuration().count();
-    if (t > 0) {
-      m_gameTime = static_cast<size_t>(t);
-      gameTimer.stop();
-    } else
-      qDebug() << "Time is: " << t;
     return false;
   }
+
   if (!isPositionValid(static_cast<size_t>(index))) {
     return false;
   }
@@ -162,16 +180,26 @@ bool GameBoard::move(int index) {
   // Really swap index and dTHE but for QAbstractListModel move index and
   // destination
   if (beginMoveRows(QModelIndex(), index, index, QModelIndex(), destination)) {
-    if (!gameTimer.isActive())
+    if (!gameTimer.isValid())
       gameTimer.start();
 
     std::swap(m_raw_board.at(static_cast<size_t>(index)),
               m_raw_board.at(static_cast<size_t>(distanceToHiddenElement)));
     endMoveRows();
-
+    qDebug() << "Time is: " << gameTimer.elapsed()
+             << " Score is: " << stepsCount();
     setStepsCounter(++m_stepsCounter);
-    qDebug() << "Done: " << __PRETTY_FUNCTION__ << " at index:" << index
-             << " score: " << stepsCount();
+
+    if (isBoardFinished()) {
+      if (gameTimer.isValid()) {
+        {
+          m_gameTime = static_cast<size_t>(gameTimer.elapsed());
+          database.writeResult(m_stepsCounter, m_gameTime);
+          gameTimer.invalidate();
+        }
+      }
+      return false;
+    }
 
     emit dataChanged(createIndex(0, 0),
                      createIndex(static_cast<int>(m_boardsize), 0));

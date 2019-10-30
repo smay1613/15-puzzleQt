@@ -3,8 +3,10 @@
 #include <QAbstractListModel>
 #include <vector>
 
-#include <QTimer>
+//#include <QTime>
+#include <QElapsedTimer>
 
+#include "sqlitemanager.h"
 class GameBoard : public QAbstractListModel {
   Q_OBJECT
   Q_PROPERTY(int hiddenElementValue READ hiddenElementValue CONSTANT)
@@ -22,9 +24,18 @@ public:
       return *this;
     }
     bool operator==(const size_t other) { return other == value; }
+    friend inline bool operator<(const GameBoard::Tile &lhs,
+                                 const GameBoard::Tile &rhs);
+    friend inline bool operator>(const GameBoard::Tile &lhs,
+                                 const GameBoard::Tile &rhs);
+    friend inline bool operator<=(const GameBoard::Tile &lhs,
+                                  const GameBoard::Tile &rhs);
+    friend inline bool operator>=(const GameBoard::Tile &lhs,
+                                  const GameBoard::Tile &rhs);
   };
 
   Q_INVOKABLE void shuffle();
+  Q_INVOKABLE void finishBoard();
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
@@ -55,7 +66,8 @@ private:
 
   int m_stepsCounter{0};
 
-  QTimer gameTimer;
+  // QTime gameTimer;
+  QElapsedTimer gameTimer;
   size_t m_gameTime;
 
   bool isBoardValid() const;
@@ -63,4 +75,19 @@ private:
   bool isPositionValid(const size_t position) const;
 
   Position getRowCol(size_t index) const;
+
+  sqlitemanager database;
 };
+
+inline bool operator<(const GameBoard::Tile &lhs, const GameBoard::Tile &rhs) {
+  return lhs.value < rhs.value;
+}
+inline bool operator>(const GameBoard::Tile &lhs, const GameBoard::Tile &rhs) {
+  return rhs < lhs;
+}
+inline bool operator<=(const GameBoard::Tile &lhs, const GameBoard::Tile &rhs) {
+  return !(lhs > rhs);
+}
+inline bool operator>=(const GameBoard::Tile &lhs, const GameBoard::Tile &rhs) {
+  return !(lhs < rhs);
+}

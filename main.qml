@@ -9,9 +9,10 @@ Window {
     title: qsTr("15-puzzle")
 
 
+
     Component.onCompleted: {
         _toolBar.restartClicked.connect(_gameBoard.restart)
-
+        _toolBar.secretClicked.connect(_gameBoard.finish)
     }
 
     GameBoard {
@@ -20,6 +21,12 @@ Window {
             model.shuffle()
             console.log("Game restarted")
         }
+        function finish(){
+            model.finishBoard()
+            console.log("Game finished")
+
+        }
+
         anchors.top: _toolBar.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left

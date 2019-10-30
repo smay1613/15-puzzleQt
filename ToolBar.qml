@@ -8,9 +8,11 @@ Rectangle {
     property alias newGame: _newGameButton
 
     signal restartClicked
+    signal secretClicked
 
     Component.onCompleted: {
         _newGameButton.clicked.connect(restartClicked)
+        _secretButton.clicked.connect(secretClicked)
     }
 
     width: parent.width;
@@ -24,6 +26,13 @@ Rectangle {
 
         text:"Start new game"
 
+    }
+    Button{
+        id:_secretButton
+
+        anchors.left: _newGameButton.right
+        anchors.verticalCenter: parent.verticalCenter
+        text:"Finish game"
     }
 
 
