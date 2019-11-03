@@ -3,7 +3,7 @@ import QtQuick 2.0
 Rectangle {
     id: root
     property alias internalText: valueText
-    color: "lightgreen"
+    color: "#17a81a"
     border.color: "black"
     border.width: 1
     radius: 5

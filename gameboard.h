@@ -11,6 +11,7 @@ class GameBoard : public QAbstractListModel {
   Q_OBJECT
   Q_PROPERTY(int hiddenElementValue READ hiddenElementValue CONSTANT)
   Q_PROPERTY(int stepsCount READ stepsCount NOTIFY stepsCountChanged)
+  Q_PROPERTY(bool Bstate READ BState WRITE setBState NOTIFY stateChanged)
 public:
   static constexpr size_t DEFAULT_DIMENSION{4};
 
@@ -52,8 +53,13 @@ public:
   int stepsCount();
   void setStepsCounter(int stepsCounter);
 
+  bool BState() const;
+  void setBState(bool value);
+
 signals:
   void stepsCountChanged(int steps);
+  void completed();
+  void stateChanged();
   // void stepsCountChanged();
 
 private:
@@ -66,12 +72,14 @@ private:
 
   int m_stepsCounter{0};
 
+  bool bState{false};
+
   // QTime gameTimer;
   QElapsedTimer gameTimer;
   size_t m_gameTime;
 
   bool isBoardValid() const;
-  bool isBoardFinished() const;
+  bool isBoardFinished();
   bool isPositionValid(const size_t position) const;
 
   Position getRowCol(size_t index) const;

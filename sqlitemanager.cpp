@@ -21,7 +21,7 @@ bool sqlitemanager::writeResult(int score, size_t time) {
   QSqlQuery query(gameDB);
   query.prepare("INSERT INTO score (time, steps) "
                 "VALUES (:time, :steps)");
-  query.bindValue(":time", time);
+  query.bindValue(":time", static_cast<long long>(time));
   query.bindValue(":steps", score);
   if (query.exec()) {
     ConnectionClose(&gameDB);

@@ -62,6 +62,7 @@ void GameBoard::shuffle() {
                    createIndex(static_cast<int>(m_boardsize), 0));
   setStepsCounter(0);
   gameTimer.invalidate();
+  setBState(false);
   qDebug() << __PRETTY_FUNCTION__;
 }
 
@@ -70,6 +71,7 @@ void GameBoard::finishBoard() {
   emit dataChanged(createIndex(0, 0),
                    createIndex(static_cast<int>(m_boardsize), 0));
   setStepsCounter(INT_MAX);
+  setBState(true);
   qDebug() << __PRETTY_FUNCTION__;
 }
 
@@ -106,7 +108,7 @@ bool GameBoard::isBoardValid() const {
   // return (inv & 1);
 }
 
-bool GameBoard::isBoardFinished() const {
+bool GameBoard::isBoardFinished() {
   bool state{true};
   size_t pos{0};
   std::for_each(m_raw_board.begin(), m_raw_board.end(),
@@ -114,6 +116,8 @@ bool GameBoard::isBoardFinished() const {
                   if (t.value != ++pos)
                     state = false;
                 });
+  setBState(state);
+  emit stateChanged();
   return state;
 }
 
@@ -149,10 +153,8 @@ GameBoard::Position GameBoard::getRowCol(size_t index) const {
 }
 
 bool GameBoard::move(int index) {
-  if (isBoardFinished()) {
+  if (BState())
     return false;
-  }
-
   if (!isPositionValid(static_cast<size_t>(index))) {
     return false;
   }
@@ -214,3 +216,7 @@ void GameBoard::setStepsCounter(int stepsCounter) {
   m_stepsCounter = stepsCounter;
   emit stepsCountChanged(stepsCounter);
 }
+
+bool GameBoard::BState() const { return bState; }
+
+void GameBoard::setBState(bool value) { bState = value; }

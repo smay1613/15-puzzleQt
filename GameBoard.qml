@@ -10,6 +10,20 @@ GridView {
     function f(s) {
       console.log("score is: ",s);
     }
+    function triggerState(){
+        if ((root.enabled==true) &&(root.visible==true))
+        {
+            root.visible=false
+            root.enabled=false
+        }
+        else
+            if ((root.enabled==false) &&(root.visible==false))
+            {
+                root.visible=true
+                root.enabled=true
+            }
+
+    }
 
     cellHeight: height / 4
     cellWidth: width / 4

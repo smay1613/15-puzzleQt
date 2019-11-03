@@ -13,6 +13,8 @@ Window {
     Component.onCompleted: {
         _toolBar.restartClicked.connect(_gameBoard.restart)
         _toolBar.secretClicked.connect(_gameBoard.finish)
+        _toolBar.secretClicked.connect(_Victory.gameFinished)
+        _Victory.restartClicked.connect(_gameBoard.newgame)
     }
 
     GameBoard {
@@ -26,16 +28,33 @@ Window {
             console.log("Game finished")
 
         }
+        function newgame(){
+            triggerState()
+            model.shuffle()
+            console.log("New game was started")
+        }
 
         anchors.top: _toolBar.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 5
+        visible: false
+        enabled: false
     }
     ToolBar{
         id:_toolBar
         scoreValue: _gameBoard.model.stepsCount
+    }
+    VictoryScreen{
+        id:_Victory
+        //anchors.top: _gameBoard.top
+        //anchors.right: _gameBoard.right
+        //anchors.bottom: _gameBoard.bottom
+        //anchors.left: _gameBoard.left
+        anchors.fill: _gameBoard
+        visible: true
+        enabled: true
     }
 
 
