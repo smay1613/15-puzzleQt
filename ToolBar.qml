@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 
 Rectangle {
-    id:root
+    id: root
 
     property int scoreValue
     property alias newGame: _newGameButton
@@ -15,34 +15,33 @@ Rectangle {
         _secretButton.clicked.connect(secretClicked)
     }
 
-    width: parent.width;
-    height: parent.height/10;
-    anchors.top:parent.top
-    Button{
-        id:_newGameButton
+    width: parent.width
+    height: parent.height / 10
+    anchors.top: parent.top
+    Button {
+        id: _newGameButton
 
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        text:"Start new game"
-
+        text: "Start new game"
     }
-    Button{
-        id:_secretButton
+    Button {
+        id: _secretButton
 
         anchors.left: _newGameButton.right
         anchors.verticalCenter: parent.verticalCenter
-        text:"Finish game"
+        text: "Finish game"
+        visible: false
     }
 
-
-    Text{
-        id:_score
+    Text {
+        id: _score
 
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
 
-        text:scoreValue
+        text: scoreValue
     }
 
     Text {

@@ -1,28 +1,18 @@
 import QtQuick 2.0
 import Game 1.0
 
-
-
 GridView {
     id: root
 
+    signal gameStateChanged(bool state)
 
     function f(s) {
-      console.log("score is: ",s);
+        console.log("score is: ", s)
     }
-    function triggerState(){
-        if ((root.enabled==true) &&(root.visible==true))
-        {
-            root.visible=false
-            root.enabled=false
-        }
-        else
-            if ((root.enabled==false) &&(root.visible==false))
-            {
-                root.visible=true
-                root.enabled=true
-            }
 
+    function setState(state) {
+        root.visible = state
+        root.enabled = state
     }
 
     cellHeight: height / 4
@@ -43,7 +33,6 @@ GridView {
 
         Tile {
 
-
             anchors.fill: _backgroundDelegate
             anchors.margins: 5
 
@@ -53,17 +42,18 @@ GridView {
                 onClicked: {
 
                     root.model.move(index)
-
                 }
-
             }
         }
     }
-    GameController_qml{
+    GameController_qml {
         id: _gameController
     }
 
     Component.onCompleted: {
-        root.model =  _gameController.getModel();
+        root.model = _gameController.getModel()
+
+        root.gameStateChanged.connect(setState)
+        root.model.stateChanged.connect(gameStateChanged)
     }
 }

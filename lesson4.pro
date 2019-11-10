@@ -35,3 +35,6 @@ HEADERS += \
     gameboard.h \
     gamecontroller.h \
     sqlitemanager.h
+
+DISTFILES += \
+    Gamedb.db

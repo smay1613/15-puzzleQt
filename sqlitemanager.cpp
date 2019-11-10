@@ -8,8 +8,6 @@ sqlitemanager::sqlitemanager(QObject *parent) : QObject(parent) {
     gameDB.setDatabaseName(path);
     connectionOpen(&gameDB);
     createDB(&gameDB);
-    // gameDB.close();
-    // gameDB.removeDatabase();
     ConnectionClose(&gameDB);
   }
 }
@@ -23,13 +21,7 @@ bool sqlitemanager::writeResult(int score, size_t time) {
                 "VALUES (:time, :steps)");
   query.bindValue(":time", static_cast<long long>(time));
   query.bindValue(":steps", score);
-  if (query.exec()) {
-    ConnectionClose(&gameDB);
-    return true;
-  } else {
-    ConnectionClose(&gameDB);
-    return false;
-  }
+  return query.exec();
 }
 
 void sqlitemanager::ConnectionClose(QSqlDatabase *base) {
@@ -40,17 +32,16 @@ void sqlitemanager::ConnectionClose(QSqlDatabase *base) {
 bool sqlitemanager::databaseExists(QString &path) {
   QFileInfo check_file(path);
   // check if file exists and if yes: Is it really a file and no directory?
-  if (check_file.exists() && check_file.isFile()) {
+  if (check_file.exists() && check_file.isFile())
     qDebug() << "File exists";
-    return true;
-  } else {
+  else
     qDebug() << "File doesnt exist: " << path;
-    return false;
-  }
+
+  return (check_file.exists() && check_file.isFile());
 }
 
 bool sqlitemanager::createDB(QSqlDatabase *base) {
-  QString *createTable = new QString(
+  auto *createTable = new QString(
       "CREATE TABLE IF NOT EXISTS score (`time` INTEGER NOT NULL , `steps` "
       "INTEGER NOT NULL ,  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT)");
   if (!base->open()) {
@@ -60,24 +51,22 @@ bool sqlitemanager::createDB(QSqlDatabase *base) {
     qDebug() << "Error creating sell: " << base->lastError().text();
     delete createTable;
     return false;
-  } else {
-    delete createTable;
   }
+  delete createTable;
 
   return true;
 }
 
 bool sqlitemanager::connectionOpen(QSqlDatabase *base) {
-  QString path = QCoreApplication::applicationDirPath() + "/Gamedb.db";
-  // gameDB=QSqlDatabase::addDatabase("QSQLITE");
-  // mydb.setDatabaseName(path);
+
   if (!base->open()) {
     qDebug() << "Error opening db: " << base->lastError().text();
-    return false;
+
   } else {
     // qDebug() << "Opened db";
     qDebug() << "Opened dbs: " << QSqlDatabase::connectionNames();
     base->exec("pragma journal_mode = wal;");
+    return true;
   }
-  return true;
+  return false;
 }

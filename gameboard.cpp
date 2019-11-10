@@ -17,9 +17,9 @@ GameBoard::GameBoard(QObject *parent, size_t board_dimension)
 }
 
 namespace {
-template <typename T> bool inRange(T low, T high, T x) {
-  return (low <= x && x <= high);
-}
+// template <typename T> bool inRange(T low, T high, T x) {
+//  return (low <= x && x <= high);
+//}
 
 bool is_adjacent(GameBoard::Position first, GameBoard::Position second) {
   if (first == second) {
@@ -62,7 +62,7 @@ void GameBoard::shuffle() {
                    createIndex(static_cast<int>(m_boardsize), 0));
   setStepsCounter(0);
   gameTimer.invalidate();
-  setBState(false);
+  setBoardState(false);
   qDebug() << __PRETTY_FUNCTION__;
 }
 
@@ -71,7 +71,8 @@ void GameBoard::finishBoard() {
   emit dataChanged(createIndex(0, 0),
                    createIndex(static_cast<int>(m_boardsize), 0));
   setStepsCounter(INT_MAX);
-  setBState(true);
+
+  setBoardState(true);
   qDebug() << __PRETTY_FUNCTION__;
 }
 
@@ -116,12 +117,13 @@ bool GameBoard::isBoardFinished() {
                   if (t.value != ++pos)
                     state = false;
                 });
-  setBState(state);
-  emit stateChanged();
+  if (BoardState() != state) {
+    setBoardState(state);
+  }
   return state;
 }
 
-bool GameBoard::isPositionValid(const size_t position) const {
+bool GameBoard::isPositionValid(size_t position) const {
   return position < m_boardsize;
 }
 
@@ -153,7 +155,7 @@ GameBoard::Position GameBoard::getRowCol(size_t index) const {
 }
 
 bool GameBoard::move(int index) {
-  if (BState())
+  if (BoardState())
     return false;
   if (!isPositionValid(static_cast<size_t>(index))) {
     return false;
@@ -181,6 +183,7 @@ bool GameBoard::move(int index) {
 
   // Really swap index and dTHE but for QAbstractListModel move index and
   // destination
+
   if (beginMoveRows(QModelIndex(), index, index, QModelIndex(), destination)) {
     if (!gameTimer.isValid())
       gameTimer.start();
@@ -217,6 +220,9 @@ void GameBoard::setStepsCounter(int stepsCounter) {
   emit stepsCountChanged(stepsCounter);
 }
 
-bool GameBoard::BState() const { return bState; }
+bool GameBoard::BoardState() const { return bBoardState; }
 
-void GameBoard::setBState(bool value) { bState = value; }
+void GameBoard::setBoardState(bool value) {
+  bBoardState = value;
+  emit stateChanged(value);
+}

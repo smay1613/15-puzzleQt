@@ -9,9 +9,14 @@
 #include "sqlitemanager.h"
 class GameBoard : public QAbstractListModel {
   Q_OBJECT
+  // Property for last hidden element on the board
   Q_PROPERTY(int hiddenElementValue READ hiddenElementValue CONSTANT)
+  // Property for counting tiles moves
   Q_PROPERTY(int stepsCount READ stepsCount NOTIFY stepsCountChanged)
-  Q_PROPERTY(bool Bstate READ BState WRITE setBState NOTIFY stateChanged)
+  // Property for board state, completed or not. Every object in qml depend on
+  // this state
+  Q_PROPERTY(
+      bool bBoardState READ BoardState WRITE setBoardState NOTIFY stateChanged)
 public:
   static constexpr size_t DEFAULT_DIMENSION{4};
 
@@ -53,14 +58,13 @@ public:
   int stepsCount();
   void setStepsCounter(int stepsCounter);
 
-  bool BState() const;
-  void setBState(bool value);
+  bool BoardState() const;
+  void setBoardState(bool value);
 
 signals:
   void stepsCountChanged(int steps);
   void completed();
-  void stateChanged();
-  // void stepsCountChanged();
+  void stateChanged(bool state);
 
 private:
   std::vector<Tile> m_raw_board;
@@ -72,11 +76,10 @@ private:
 
   int m_stepsCounter{0};
 
-  bool bState{false};
+  bool bBoardState{false};
 
-  // QTime gameTimer;
   QElapsedTimer gameTimer;
-  size_t m_gameTime;
+  size_t m_gameTime{};
 
   bool isBoardValid() const;
   bool isBoardFinished();

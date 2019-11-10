@@ -8,29 +8,25 @@ Window {
     height: 480
     title: qsTr("15-puzzle")
 
-
-
     Component.onCompleted: {
-        _toolBar.restartClicked.connect(_gameBoard.restart)
+        _toolBar.restartClicked.connect(_gameBoard.newgame)
         _toolBar.secretClicked.connect(_gameBoard.finish)
         _toolBar.secretClicked.connect(_Victory.gameFinished)
+
         _Victory.restartClicked.connect(_gameBoard.newgame)
+
+        _gameBoard.gameStateChanged.connect(_Victory.gameStateChanged)
     }
 
     GameBoard {
         id: _gameBoard
-        function restart(){
-            model.shuffle()
-            console.log("Game restarted")
-        }
-        function finish(){
+        function finish() {
             model.finishBoard()
-            console.log("Game finished")
-
+            console.log("Board completed")
         }
-        function newgame(){
-            triggerState()
+        function newgame() {
             model.shuffle()
+            setState(true)
             console.log("New game was started")
         }
 
@@ -39,26 +35,18 @@ Window {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 5
-        visible: false
-        enabled: false
-    }
-    ToolBar{
-        id:_toolBar
-        scoreValue: _gameBoard.model.stepsCount
-    }
-    VictoryScreen{
-        id:_Victory
-        //anchors.top: _gameBoard.top
-        //anchors.right: _gameBoard.right
-        //anchors.bottom: _gameBoard.bottom
-        //anchors.left: _gameBoard.left
-        anchors.fill: _gameBoard
         visible: true
         enabled: true
     }
+    ToolBar {
+        id: _toolBar
+        scoreValue: _gameBoard.model.stepsCount
+    }
+    VictoryScreen {
+        id: _Victory
 
-
-
-
-
+        anchors.fill: _gameBoard
+        visible: false
+        enabled: false
+    }
 }
