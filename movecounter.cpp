@@ -15,3 +15,10 @@ void MoveCounter::increment()
 {
     emit currentCountChanged(++currentCount_);
 }
+
+void MoveCounter::resetCurrentCount()
+{
+    if (currentCount_ != 0) {
+        emit currentCountChanged(currentCount_ = 0);
+    }
+}

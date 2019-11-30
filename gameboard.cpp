@@ -26,6 +26,7 @@ void GameBoard::shuffle()
         std::shuffle(m_raw_board.begin(), m_raw_board.end(), g);
     }
     while (!isBoardValid());
+    emit dataChanged(index(0, 0), index(static_cast<int>(m_boardsize), 0));
 }
 
 bool GameBoard::isBoardValid() const
@@ -53,6 +54,13 @@ bool GameBoard::isBoardValid() const
 bool GameBoard::isPositionValid(const size_t position) const
 {
     return position < m_boardsize;
+}
+
+bool GameBoard::isSolved() const
+{
+    std::vector<Tile> solved_ethalon(m_boardsize);
+    std::iota(solved_ethalon.begin(), solved_ethalon.end(), 1);
+    return solved_ethalon == m_raw_board;
 }
 
 int GameBoard::hiddenElementIndex() const
@@ -150,6 +158,9 @@ bool GameBoard::move(int index)
         moveRow(QModelIndex(), newHiddenIndex, QModelIndex(), newHiddenIndex > index ? index : index + 1);
     }
     emit tileMoved();
+    if (isSolved()) {
+        emit solved();
+    }
     return true;
 }
 

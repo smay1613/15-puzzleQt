@@ -35,10 +35,16 @@ GridView {
         }
     }
 
-    signal tileMoved();
+    function restartGame() {
+        _gameController.restartGame()
+    }
+
+    signal tileMoved()
+    signal solved()
     GameController_qml{
         id: _gameController
-        onTileMoved: root.tileMoved();
+        onTileMoved: root.tileMoved()
+        onSolved: root.solved()
     }
 
     Component.onCompleted: {

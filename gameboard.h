@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include <QAbstractListModel>
@@ -21,6 +21,9 @@ public:
         bool operator==(size_t other) const {
             return other == value;
         }
+        bool operator==(const Tile &other) const {
+            return other.value == value;
+        }
     };
 
     void shuffle();
@@ -38,6 +41,7 @@ public:
 
 signals:
     void tileMoved();
+    void solved();
 
 private:
     std::vector<Tile> m_raw_board;
@@ -48,6 +52,7 @@ private:
 
     bool isBoardValid() const;
     bool isPositionValid(const size_t position) const;
+    bool isSolved() const;
 
     int hiddenElementIndex() const;
 
