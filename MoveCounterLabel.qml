@@ -14,6 +14,10 @@ Label {
         _moveCounter.updateBestScore()
     }
 
+    function resetCurrentCount() {
+        _moveCounter.resetCurrentCount()
+    }
+
     MoveCounter_qml {
         id: _moveCounter
     }

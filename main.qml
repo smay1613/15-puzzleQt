@@ -17,6 +17,7 @@ Window {
         onTileMoved: _moveCounterLabel.increment()
         onSolved: {
             _moveCounterLabel.updateBestScore();
+            _timeLabel.stopTimer();
             _solvedDialog.open();
         }
     }
@@ -50,18 +51,19 @@ Window {
         }
     }
 
+    function startNewGame() {
+        _gameBoard.restartGame();
+        _moveCounterLabel.resetCurrentCount();
+        _timeLabel.reset();
+    }
+
     MessageDialog {
-        property bool lastAnswerIsYes: false
         id: _solvedDialog
         title: qsTr("Solved!")
         text: qsTr("Would u like to restart the game?")
         standardButtons: StandardButton.Yes | StandardButton.No
         icon: StandardIcon.Question
-        onYes: {
-            lastAnswerIsYes = true;
-            _gameBoard.restartGame();
-            _moveCounterLabel.resetCurrentCount();
-        }
+        onYes: startNewGame()
         onNo: Qt.quit()
         // onRejected почему-то не отрабатывает при закрытии диалога
     }
