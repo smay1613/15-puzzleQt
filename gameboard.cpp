@@ -4,6 +4,7 @@
 #include <numeric>
 #include <algorithm>
 #include <random>
+#include <QDebug>
 
 GameBoard::GameBoard(QObject *parent, size_t board_dimension):
     QAbstractListModel {parent},
@@ -52,6 +53,15 @@ bool GameBoard::isBoardValid() const
 bool GameBoard::isPositionValid(const size_t position) const
 {
     return position < m_boardsize;
+}
+
+int GameBoard::hiddenElementIndex() const
+{
+    const auto hiddenElementIterator =
+            std::find(m_raw_board.begin(), m_raw_board.end(),
+                      m_hiddenElementValue);
+
+    return static_cast<int>(std::distance(m_raw_board.begin(), hiddenElementIterator));
 }
 
 int GameBoard::rowCount(const QModelIndex &/*parent*/) const
@@ -126,17 +136,43 @@ bool GameBoard::move(int index)
     }
 
     Position positionOfIndex {getRowCol(index)};
-
-    auto hiddenElementIterator = std::find(m_raw_board.begin(), m_raw_board.end(), m_hiddenElementValue);
-
-    Q_ASSERT(hiddenElementIterator != m_raw_board.end());
-    Position hiddenElementPosition {getRowCol(std::distance(m_raw_board.begin(), hiddenElementIterator))};
+    const int oldHiddenIndex = hiddenElementIndex();
+    Position hiddenElementPosition {getRowCol(oldHiddenIndex)};
 
     if (!is_adjacent(positionOfIndex, hiddenElementPosition)) {
         return false;
     }
 
-    std::swap(hiddenElementIterator->value, m_raw_board[index].value);
-    emit dataChanged(createIndex(0, 0), createIndex(m_boardsize, 0));
+    moveRow(QModelIndex(), index, QModelIndex(), index > oldHiddenIndex ? oldHiddenIndex : oldHiddenIndex + 1);
+
+    const int newHiddenIndex = hiddenElementIndex();
+    if (newHiddenIndex != index) {
+        moveRow(QModelIndex(), newHiddenIndex, QModelIndex(), newHiddenIndex > index ? index : index + 1);
+    }
+    return true;
+}
+
+bool GameBoard::moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild)
+{
+    const int sourceEndRow = sourceRow + count;
+    const bool nice_input = (sourceEndRow > 0) &&
+            (sourceEndRow <= static_cast<int>(m_boardsize)) &&
+            !(sourceRow <= destinationChild && destinationChild < sourceEndRow);
+    if (!nice_input) {
+        qWarning().nospace()
+                << "GameBoard::moveRows. Bad input got: sourceRow = " << sourceRow
+                << ", count = " << count << ", destinationChild = " << destinationChild;
+        return false;
+    }
+
+    beginMoveRows(sourceParent, sourceRow, sourceEndRow - 1, destinationParent, destinationChild);
+    const std::vector<Tile> movingRowsCopy = {m_raw_board.cbegin() + sourceRow,
+                                              m_raw_board.cbegin() + sourceEndRow};
+    m_raw_board.erase(m_raw_board.cbegin() + sourceRow,
+                      m_raw_board.cbegin() + sourceEndRow);
+    m_raw_board.insert(m_raw_board.cbegin() + destinationChild - (destinationChild > sourceRow ? count : 0),
+                       movingRowsCopy.begin(), movingRowsCopy.end());
+
+    endMoveRows();
     return true;
 }

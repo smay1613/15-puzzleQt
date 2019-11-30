@@ -4,6 +4,10 @@ import Game 1.0
 GridView {
     id: root
 
+    move: Transition {
+        NumberAnimation { properties: "x,y"; duration: 1000 }
+    }
+
     cellHeight: height / 4
     cellWidth: width / 4
 

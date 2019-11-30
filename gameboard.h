@@ -18,7 +18,7 @@ public:
             value = new_value;
             return *this;
         }
-        bool operator==(const size_t other) {
+        bool operator==(size_t other) const {
             return other == value;
         }
     };
@@ -31,6 +31,8 @@ public:
     size_t hiddenElementValue() const;
 
     Q_INVOKABLE bool move (int index);
+    bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
+                  const QModelIndex &destinationParent, int destinationChild) override;
 
     using Position = std::pair<size_t, size_t>;
 
@@ -43,6 +45,8 @@ private:
 
     bool isBoardValid() const;
     bool isPositionValid(const size_t position) const;
+
+    int hiddenElementIndex() const;
 
     Position getRowCol(size_t index) const;
 
