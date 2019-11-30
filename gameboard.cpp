@@ -26,7 +26,7 @@ void GameBoard::shuffle()
         std::shuffle(m_raw_board.begin(), m_raw_board.end(), g);
     }
     while (!isBoardValid());
-    emit dataChanged(createIndex(0, 0), createIndex(m_boardsize, 0));
+    emit dataChanged(index(0, 0), index(m_boardsize - 1, 0));
 }
 
 bool GameBoard::isBoardValid() const
