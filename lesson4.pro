@@ -1,5 +1,5 @@
 QT += quick
-CONFIG += c++11
+CONFIG += c++11 sanitizer sanitize_address sanitize_leak sanitize_undefined
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -15,7 +15,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         gameboard.cpp \
         gamecontroller.cpp \
-        main.cpp
+        main.cpp \
+        movecounter.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,4 +33,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     gameboard.h \
-    gamecontroller.h
+    gamecontroller.h \
+    movecounter.h

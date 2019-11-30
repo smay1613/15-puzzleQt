@@ -4,6 +4,10 @@ import Game 1.0
 GridView {
     id: root
 
+    move: Transition {
+        NumberAnimation { properties: "x,y"; duration: 1000 }
+    }
+
     cellHeight: height / 4
     cellWidth: width / 4
 
@@ -31,11 +35,19 @@ GridView {
         }
     }
 
+    function restartGame() {
+        _gameController.restartGame()
+    }
+
+    signal tileMoved()
+    signal solved()
     GameController_qml{
         id: _gameController
+        onTileMoved: root.tileMoved()
+        onSolved: root.solved()
     }
 
     Component.onCompleted: {
-        root.model =  _gameController.getModel();
+        root.model = _gameController.getModel();
     }
 }
