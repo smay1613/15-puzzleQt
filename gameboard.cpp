@@ -149,6 +149,7 @@ bool GameBoard::move(int index)
     if (newHiddenIndex != index) {
         moveRow(QModelIndex(), newHiddenIndex, QModelIndex(), newHiddenIndex > index ? index : index + 1);
     }
+    emit tileMoved();
     return true;
 }
 

@@ -13,6 +13,7 @@ Window {
         anchors.fill: parent
         anchors.margins: 5
         anchors.bottomMargin: parent.height - _timeLabel.y
+        onTileMoved: _moveCounterLabel.increment()
     }
 
     TimeLabel {
@@ -28,4 +29,19 @@ Window {
             bold: true
         }
     }
+    MoveCounterLabel {
+        id: _moveCounterLabel
+        anchors {
+            right: parent.right
+            bottom: parent.bottom
+            margins: 5
+            rightMargin: 10
+        }
+
+        font {
+            pointSize: parent.height / 4 * 0.15;
+            bold: true
+        }
+    }
+
 }

@@ -12,6 +12,9 @@ public:
 
     Q_INVOKABLE GameBoard* getModel();
 
+signals:
+    void tileMoved();
+
 private:
     GameBoard gameBoard;
 };

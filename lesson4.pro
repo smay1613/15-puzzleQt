@@ -15,7 +15,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         gameboard.cpp \
         gamecontroller.cpp \
-        main.cpp
+        main.cpp \
+        movecounter.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,4 +33,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     gameboard.h \
-    gamecontroller.h
+    gamecontroller.h \
+    movecounter.h

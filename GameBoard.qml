@@ -35,11 +35,13 @@ GridView {
         }
     }
 
+    signal tileMoved();
     GameController_qml{
         id: _gameController
+        onTileMoved: root.tileMoved();
     }
 
     Component.onCompleted: {
-        root.model =  _gameController.getModel();
+        root.model = _gameController.getModel();
     }
 }

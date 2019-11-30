@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include "gameboard.h"
 #include "gamecontroller.h"
+#include "movecounter.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<GameBoard>     ("Game", 1, 0, "GameBoard_qml"     );
     qmlRegisterType<GameController>("Game", 1, 0, "GameController_qml");
+    qmlRegisterType<MoveCounter>("Game", 1, 0, "MoveCounter_qml");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

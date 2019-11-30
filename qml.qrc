@@ -4,5 +4,6 @@
         <file>GameBoard.qml</file>
         <file>Tile.qml</file>
         <file>TimeLabel.qml</file>
+        <file>MoveCounterLabel.qml</file>
     </qresource>
 </RCC>
