@@ -16,7 +16,8 @@ Window {
         anchors.bottomMargin: parent.height - _timeLabel.y
         onTileMoved: _moveCounterLabel.increment()
         onSolved: {
-            _solvedDialog.open()
+            _moveCounterLabel.updateBestScore();
+            _solvedDialog.open();
         }
     }
 
