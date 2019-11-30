@@ -12,5 +12,20 @@ Window {
         id: _gameBoard
         anchors.fill: parent
         anchors.margins: 5
+        anchors.bottomMargin: parent.height - _timeLabel.y
+    }
+
+    TimeLabel {
+        id: _timeLabel
+        anchors {
+            left: parent.left
+            bottom: parent.bottom
+            margins: 5
+            leftMargin: 10
+        }
+        font {
+            pointSize: parent.height / 4 * 0.15;
+            bold: true
+        }
     }
 }
