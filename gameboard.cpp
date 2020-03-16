@@ -1,5 +1,6 @@
 #include "gameboard.h"
 
+#include <QDebug>
 #include <cmath>
 #include <numeric>
 #include <algorithm>
@@ -21,10 +22,13 @@ void GameBoard::shuffle()
     auto seed = std::chrono::system_clock::now().time_since_epoch().count();
     static std::mt19937 g(seed);
 
+    moveCount = 0;
+
     do {
         std::shuffle(m_raw_board.begin(), m_raw_board.end(), g);
     }
     while (!isBoardValid());
+    timer.start();
 }
 
 bool GameBoard::isBoardValid() const
@@ -119,6 +123,21 @@ namespace  {
     }
 }
 
+bool GameBoard::isFinished()
+{
+    size_t cnt = 1;
+    foreach ( Tile t, m_raw_board)
+    {
+        qDebug() << "t: " << t.value << "c: " << cnt;
+        if ( cnt != t.value)
+        {
+            return false;
+        }
+        cnt++;
+    }
+    return true;
+}
+
 bool GameBoard::move(int index)
 {
     if (!isPositionValid(static_cast<size_t>(index))) {
@@ -138,5 +157,7 @@ bool GameBoard::move(int index)
 
     std::swap(hiddenElementIterator->value, m_raw_board[index].value);
     emit dataChanged(createIndex(0, 0), createIndex(m_boardsize, 0));
+
+    qDebug() << "MOVE: " << moveCount << "Time: " << timer.elapsed()/1000 << " sec";
     return true;
 }

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <QAbstractListModel>
+#include <QElapsedTimer>
 
 class GameBoard : public QAbstractListModel
 {
@@ -31,6 +32,10 @@ public:
     size_t hiddenElementValue() const;
 
     Q_INVOKABLE bool move (int index);
+    Q_INVOKABLE bool isFinished();
+    Q_INVOKABLE void restart() { shuffle(); }
+    Q_INVOKABLE QString getMessage() {
+        return QString("You win! Steps: %1 Time: %2").arg(moveCount).arg( timer.elapsed()/1000); };
 
     using Position = std::pair<size_t, size_t>;
 
@@ -46,4 +51,6 @@ private:
 
     Position getRowCol(size_t index) const;
 
+    size_t moveCount;
+    QElapsedTimer timer;
 };
