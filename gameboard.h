@@ -9,7 +9,7 @@ class GameBoard : public QAbstractListModel
     Q_PROPERTY(int hiddenElementValue READ hiddenElementValue CONSTANT)
     Q_PROPERTY(int dimension READ dimension CONSTANT)
 public:
-    static constexpr size_t DEFAULT_DIMENSION  {2};
+    static constexpr size_t DEFAULT_DIMENSION  {4};
 
     GameBoard(QObject *parent = nullptr, size_t board_dimension = DEFAULT_DIMENSION);
 
