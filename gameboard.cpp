@@ -31,13 +31,12 @@ bool GameBoard::isBoardValid() const
 {
     int inv {0};
     for (size_t i {0}; i < m_boardsize; ++i) {
-        for (size_t j = 0; j < i; ++j) {
-            if (m_raw_board[j].value > m_raw_board[i].value){
+        for (size_t j = i; j < m_boardsize; ++j) {
+            if (m_raw_board[j].value < m_raw_board[i].value && m_raw_board[i].value!=m_boardsize){
                 ++inv;
             }
         }
     }
-
     const size_t start_point = 1;
 
     for (size_t i = 0; i < m_boardsize; ++i) {
@@ -140,3 +139,10 @@ bool GameBoard::move(int index)
     emit dataChanged(createIndex(0, 0), createIndex(m_boardsize, 0));
     return true;
 }
+
+size_t GameBoard::dimension() const
+{
+    return m_dimension;
+}
+
+

@@ -7,8 +7,9 @@ class GameBoard : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(int hiddenElementValue READ hiddenElementValue CONSTANT)
+    Q_PROPERTY(int dimension READ dimension CONSTANT)
 public:
-    static constexpr size_t DEFAULT_DIMENSION  {4};
+    static constexpr size_t DEFAULT_DIMENSION  {2};
 
     GameBoard(QObject *parent = nullptr, size_t board_dimension = DEFAULT_DIMENSION);
 
@@ -28,11 +29,14 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+    size_t dimension() const;
     size_t hiddenElementValue() const;
 
     Q_INVOKABLE bool move (int index);
 
     using Position = std::pair<size_t, size_t>;
+
+
 
 private:
     std::vector<Tile> m_raw_board;
