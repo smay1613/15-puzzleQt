@@ -4,8 +4,8 @@ import Game 1.0
 GridView {
     id: root
 
-    cellHeight: height / 4
-    cellWidth: width / 4
+    cellHeight: height / root.model.dimension
+    cellWidth: width / root.model.dimension
 
     interactive: false
 
