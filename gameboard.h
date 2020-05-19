@@ -36,8 +36,6 @@ public:
 
     using Position = std::pair<size_t, size_t>;
 
-
-
 private:
     std::vector<Tile> m_raw_board;
     const size_t m_dimension;
